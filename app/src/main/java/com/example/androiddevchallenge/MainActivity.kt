@@ -16,13 +16,24 @@
 package com.example.androiddevchallenge
 
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.androiddevchallenge.ui.theme.MyTheme
 
 class MainActivity : AppCompatActivity() {
@@ -39,8 +50,37 @@ class MainActivity : AppCompatActivity() {
 // Start building your app here!
 @Composable
 fun MyApp() {
-    Surface(color = MaterialTheme.colors.background) {
-        Text(text = "Ready... Set... GO!")
+    val textFieldState = remember { mutableStateOf("30") }
+    remember {
+        mutableStateOf(
+            object : CountDownTimer(30000, 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    textFieldState.value = "${millisUntilFinished / 1000}"
+                    Log.d("hoge", "${millisUntilFinished / 1000}")
+                }
+
+                override fun onFinish() {
+                    textFieldState.value = "done!"
+                    Log.d("hoge", "onFinish")
+                }
+            }.start()
+        )
+    }
+    Log.d("hoge", "onStart")
+
+    Row(
+        modifier = Modifier.padding(16.dp)
+            .fillMaxWidth()
+            .fillMaxHeight(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = textFieldState.value,
+            modifier = Modifier.padding(bottom = 8.dp),
+            style = MaterialTheme.typography.h1,
+            color = MaterialTheme.colors.secondary
+        )
     }
 }
 
